@@ -5,15 +5,19 @@ import Data.Map (Map)
 import qualified Data.Map as L
 import Control.Monad (replicateM)
 import Data.Char (isSpace)
+import System.IO
 import Lexer
 import Parser
 
   
 main :: IO ()
-main = do
-  s <- getContents
-  print $ parseArrow $ lexArrow  s
+main = undefined
 
+printFile :: FilePath -> IO ()
+printFile path = do
+   h <- openFile path ReadMode
+   c <- hGetContents h
+   print $ parseArrow $ lexArrow c
 
 type Space     =  Map Pos Contents
 type Size      =  Int
