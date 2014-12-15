@@ -11,11 +11,9 @@ import Parser
 
   
 main :: IO ()
-main = undefined
-
-printFile :: FilePath -> IO ()
-printFile path = do
-   h <- openFile path ReadMode
+main = do 
+   l <- getLine
+   h <- openFile l ReadMode
    c <- hGetContents h
    print $ parseArrow $ lexArrow c
 
