@@ -80,5 +80,5 @@ data Dir     = LeftD | RightD | FrontD
 data Alt     = Match Pat [Cmd]
 	deriving Show
 data Pat     = EmptyP | LambdaP | DebrisP | AsteroidP | BoundaryP | AnyP
-	deriving Show
+	deriving (Show, Eq)
 }

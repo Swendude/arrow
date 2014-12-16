@@ -16,11 +16,11 @@ import Data.Array.Base (unsafeAt)
 import Array
 import Char (ord)
 #endif
-{-# LINE 1 "templates/wrappers.hs" #-}
-{-# LINE 1 "templates/wrappers.hs" #-}
+{-# LINE 1 "templates\wrappers.hs" #-}
+{-# LINE 1 "templates\\wrappers.hs" #-}
 {-# LINE 1 "<built-in>" #-}
 {-# LINE 1 "<command-line>" #-}
-{-# LINE 1 "templates/wrappers.hs" #-}
+{-# LINE 1 "templates\\wrappers.hs" #-}
 -- -----------------------------------------------------------------------------
 -- Alex wrapper code.
 --
@@ -28,7 +28,7 @@ import Char (ord)
 -- it for any purpose whatsoever.
 
 import Data.Word (Word8)
-{-# LINE 22 "templates/wrappers.hs" #-}
+{-# LINE 22 "templates\\wrappers.hs" #-}
 
 import qualified Data.Bits
 
@@ -60,13 +60,13 @@ type Byte = Word8
 -- -----------------------------------------------------------------------------
 -- The input type
 
-{-# LINE 72 "templates/wrappers.hs" #-}
+{-# LINE 72 "templates\\wrappers.hs" #-}
 
-{-# LINE 89 "templates/wrappers.hs" #-}
+{-# LINE 92 "templates\\wrappers.hs" #-}
 
-{-# LINE 103 "templates/wrappers.hs" #-}
+{-# LINE 106 "templates\\wrappers.hs" #-}
 
-{-# LINE 118 "templates/wrappers.hs" #-}
+{-# LINE 121 "templates\\wrappers.hs" #-}
 
 -- -----------------------------------------------------------------------------
 -- Token positions
@@ -78,18 +78,18 @@ type Byte = Word8
 -- `move_pos' calculates the new position after traversing a given character,
 -- assuming the usual eight character tab stops.
 
-{-# LINE 141 "templates/wrappers.hs" #-}
+{-# LINE 144 "templates\\wrappers.hs" #-}
 
 -- -----------------------------------------------------------------------------
 -- Default monad
 
-{-# LINE 239 "templates/wrappers.hs" #-}
+{-# LINE 242 "templates\\wrappers.hs" #-}
 
 
 -- -----------------------------------------------------------------------------
 -- Monad (with ByteString input)
 
-{-# LINE 328 "templates/wrappers.hs" #-}
+{-# LINE 333 "templates\\wrappers.hs" #-}
 
 
 -- -----------------------------------------------------------------------------
@@ -122,9 +122,9 @@ alexGetByte (_,[],(c:s)) = case utf8Encode c of
 -- -----------------------------------------------------------------------------
 -- Basic wrapper, ByteString version
 
-{-# LINE 373 "templates/wrappers.hs" #-}
+{-# LINE 378 "templates\\wrappers.hs" #-}
 
-{-# LINE 386 "templates/wrappers.hs" #-}
+{-# LINE 392 "templates\\wrappers.hs" #-}
 
 
 -- -----------------------------------------------------------------------------
@@ -132,13 +132,13 @@ alexGetByte (_,[],(c:s)) = case utf8Encode c of
 
 -- Adds text positions to the basic model.
 
-{-# LINE 403 "templates/wrappers.hs" #-}
+{-# LINE 409 "templates\\wrappers.hs" #-}
 
 
 -- -----------------------------------------------------------------------------
 -- Posn wrapper, ByteString version
 
-{-# LINE 418 "templates/wrappers.hs" #-}
+{-# LINE 424 "templates\\wrappers.hs" #-}
 
 
 -- -----------------------------------------------------------------------------
@@ -211,11 +211,11 @@ alex_action_19 = const AsteroidT
 alex_action_20 = const BoundaryT
 alex_action_21 = const AnyT
 alex_action_22 = \s -> IdentT s
-{-# LINE 1 "templates/GenericTemplate.hs" #-}
-{-# LINE 1 "templates/GenericTemplate.hs" #-}
+{-# LINE 1 "templates\GenericTemplate.hs" #-}
+{-# LINE 1 "templates\\GenericTemplate.hs" #-}
 {-# LINE 1 "<built-in>" #-}
 {-# LINE 1 "<command-line>" #-}
-{-# LINE 1 "templates/GenericTemplate.hs" #-}
+{-# LINE 1 "templates\\GenericTemplate.hs" #-}
 -- -----------------------------------------------------------------------------
 -- ALEX TEMPLATE
 --
@@ -225,19 +225,19 @@ alex_action_22 = \s -> IdentT s
 -- -----------------------------------------------------------------------------
 -- INTERNALS and main scanner engine
 
-{-# LINE 21 "templates/GenericTemplate.hs" #-}
+{-# LINE 21 "templates\\GenericTemplate.hs" #-}
 
-{-# LINE 50 "templates/GenericTemplate.hs" #-}
+{-# LINE 51 "templates\\GenericTemplate.hs" #-}
 
-{-# LINE 71 "templates/GenericTemplate.hs" #-}
+{-# LINE 72 "templates\\GenericTemplate.hs" #-}
 alexIndexInt16OffAddr arr off = arr ! off
 
 
-{-# LINE 92 "templates/GenericTemplate.hs" #-}
+{-# LINE 93 "templates\\GenericTemplate.hs" #-}
 alexIndexInt32OffAddr arr off = arr ! off
 
 
-{-# LINE 103 "templates/GenericTemplate.hs" #-}
+{-# LINE 105 "templates\\GenericTemplate.hs" #-}
 quickIndex arr i = arr ! i
 
 
