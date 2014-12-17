@@ -7,6 +7,8 @@ import Control.Monad (replicateM)
 import Data.Char (isSpace)
 import System.IO
 import Data.List (nub)
+import Data.List.Split.Internals (chunksOf)
+import Data.Maybe (fromJust)
 import Lexer
 import Parser
 
@@ -19,12 +21,23 @@ main = do
    r <- return (parseArrow $ lexArrow c)
    print r
    print (check r)
-   print (programFold definedAltsAlgebra r)
+   print (programFold environmentAlgebra r)
+   print (toEnvironment c)
+mainPrint :: IO ()
+mainPrint = do   
+   l <- getLine
+   h <- openFile l ReadMode
+   c <- hGetContents h
+   r <- return (fst (head (parse parseSpace c)))
+   print r
+   putStr (spacePrinter r)
+
    
 type Space     =  Map Pos Contents
 type Size      =  Int
 type Pos       =  (Int, Int)
 data Contents  =  Empty | Lambda | Debris | Asteroid | Boundary
+	deriving (Show,Eq)
 
 parseSpace :: Parser Char Space
 parseSpace =
@@ -50,8 +63,8 @@ contentsTable =
   [  (Empty,'.'),(Lambda,'\\'),(Debris,'%'),(Asteroid,'O'),(Boundary,'#')]
 
 -- These three should be defined by you
-type Ident = ()
-type Commands = ()
+type Ident = String
+type Commands = [Cmd]
 type Heading = ()
 
 type Environment = Map Ident Commands
@@ -66,53 +79,6 @@ data Step  =  Done  Space Pos Heading
 		   
 {- Question 4.
 The Happy documentation states: "The only reason we used left recursion is that Happy is more efficient at parsing left-recursive rules". The opposite is true for parsers created with parser combinators, they can even get stuck  in an infinite loop because of left-recursion. 
--}
-
-{-
-data Program = Rules [Rule]
-	deriving Show
-data Rule    = Rule String [Cmd]
-	deriving Show
-data Cmd     = GoC | TakeC | MarkC | NothingC | TurnC Dir | CaseC Dir [Alt] | IdentC String 
-	deriving Show
-data Dir     = LeftD | RightD | FrontD
-	deriving Show
-data Alt     = Match Pat [Cmd]
-	deriving Show
-data Pat     = EmptyP | LambdaP | DebrisP | AsteroidP | BoundaryP | AnyP
-	deriving Show
-
-	
-
-programFold :: ProgramAlgebra a -> Program -> a
-programFold (program, 
-			rule, 
-			(cmdGo, cmdTake, cmdMark, cmdNothing, cmdTurn, cmdCase, cmdIdent), 
-			(dirLeft, dirRight, dirFront), 
-			alt, 
-			(patEmpty, patLambda, patDebris, patAsteroid, patBoundary, patAny)
-		) = fold
-			where
-				fold (Rules rules) = program (map fold rules)
-				fold (Rule s cmds) = rule s (map fold cmds)
-				fold GoC = cmdGo
-				fold TakeC = cmdTake
-				fold MarkC  = cmdMark
-				fold NothingC = cmdNothing
-				fold (TurnC d) = cmdTurn (fold d)
-				fold (CaseC d alts) = cmdCase (fold d) (map fold alts)
-				fold LeftD = dirLeft
-				fold RightD = dirRight
-				fold FrontD = dirFront
-				fold (Match p cmds) = alt (fold p) (map fold cmds)
-				fold EmptyP = patEmpty
-				fold LambdaP = patLambda
-				fold DebrisP = patDebris
-				fold AsteroidP = patAsteroid
-				fold BoundaryP = patBoundary
-				fold AnyP = patAny
-
-			
 -}
 
 type ProgramAlgebra p r c d a pa = ([r] -> p, 								-- program
@@ -203,17 +169,51 @@ definedAltsAlgebra = (\xs -> concat xs,
 					  \x xs -> (x, concat xs),
 					  (EmptyP, LambdaP, DebrisP, AsteroidP, BoundaryP, AnyP)
 					  )
-	{-
-data Program = Rules [Rule]
-	deriving Show
-data Rule    = Rule String [Cmd]
-	deriving Show
-data Cmd     = GoC | TakeC | MarkC | NothingC | TurnC Dir | CaseC Dir [Alt] | IdentC String 
-	deriving Show
-data Dir     = LeftD | RightD | FrontD
-	deriving Show
-data Alt     = Match Pat [Cmd]
-	deriving Show
-data Pat     = EmptyP | LambdaP | DebrisP | AsteroidP | BoundaryP | AnyP
-	deriving Show
--}	
+-- Question 7.
+spacePrinter :: Space -> String
+spacePrinter s = printSpace 
+				where
+					((maxx,maxy),_) = L.findMax s
+					keys = [(x,y)|x<-[0..maxx], y <-[0..maxy]]
+					valuesList = chunksOf (maxy+1) (map (\key -> s L.! key) keys)
+					stringList = map (\x -> map showContent x) valuesList
+					printSpace = show (maxx,maxy) ++ "\n" ++ foldr (\x y-> x ++ "\n" ++ y) "" stringList
+
+showContent :: Contents -> Char
+showContent pat = fromJust (lookup pat contentsTable)
+
+-- Question 8.
+toEnvironment :: String -> Environment
+toEnvironment s = toEnvironment' (parseArrow $ lexArrow s)
+					where 
+						toEnvironment' program | check program = L.fromList (programFold environmentAlgebra program)
+											   | otherwise = error "Program did not pass check, check syntax."
+
+		
+environmentAlgebra :: ProgramAlgebra [(String,[Cmd])] (String,[Cmd]) Cmd Dir Alt Pat
+environmentAlgebra =  (\xs -> xs,
+						\s cs -> (s,cs),
+						(GoC, TakeC, MarkC, NothingC, \d -> TurnC d, \d as-> CaseC d as, \s -> IdentC s),
+						(LeftD, RightD, FrontD),
+						\p cs -> Match p cs,
+						(EmptyP, LambdaP, DebrisP, AsteroidP, BoundaryP, AnyP)
+						)
+
+---- Program Datatype
+--data Program = Rules [Rule]
+--	deriving Show
+--data Rule    = Rule String [Cmd]
+--	deriving Show
+--data Cmd     = GoC | TakeC | MarkC | NothingC | TurnC Dir | CaseC Dir [Alt] | IdentC String 
+--	deriving Show
+--data Dir     = LeftD | RightD | FrontD
+--	deriving Show
+--data Alt     = Match Pat [Cmd]
+--	deriving Show
+--data Pat     = EmptyP | LambdaP | DebrisP | AsteroidP | BoundaryP | AnyP
+--	deriving (Show, Eq)
+
+
+
+
+
